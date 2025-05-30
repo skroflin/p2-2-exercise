@@ -4,7 +4,6 @@
  */
 package ffos.skroflin.model.dto;
 
-import ffos.skroflin.model.StudentProstorija;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
@@ -14,8 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record StudentPolicaDTO(
         @Schema(example = "50m") int duzina,
         @Schema(example = "100m") int sirina,
-        @Schema(example = "3m") int visina,
-        @Schema(example = "1") StudentProstorija studentProstorija
+        @Schema(example = "3m") int visina
         ) {
     
 }

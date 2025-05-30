@@ -54,4 +54,10 @@ public class StudentPolica extends Entitet{
     public void setStudentProstorija(StudentProstorija studentProstorija) {
         this.studentProstorija = studentProstorija;
     }
+
+    public StudentPolica(int duzina, int sirina, int visina) {
+        this.duzina = duzina;
+        this.sirina = sirina;
+        this.visina = visina;
+    }
 }

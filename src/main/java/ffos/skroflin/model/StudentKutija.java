@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -54,5 +55,10 @@ public class StudentKutija extends Entitet{
     public void setStudentPolica(StudentPolica studentPolica) {
         this.studentPolica = studentPolica;
     }
-    
+
+    public StudentKutija(Date datumPohrane, BigDecimal obujam, String oznakaKutije) {
+        this.datumPohrane = datumPohrane;
+        this.obujam = obujam;
+        this.oznakaKutije = oznakaKutije;
+    }
 }

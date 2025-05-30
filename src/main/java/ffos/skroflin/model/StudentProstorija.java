@@ -32,5 +32,9 @@ public class StudentProstorija extends Entitet{
     public void setNaziv(String naziv) {
         this.naziv = naziv;
     }
-    
+
+    public StudentProstorija(boolean kabinet, String naziv) {
+        this.kabinet = kabinet;
+        this.naziv = naziv;
+    }
 }
