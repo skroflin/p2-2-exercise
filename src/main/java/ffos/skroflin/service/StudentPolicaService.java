@@ -53,4 +53,8 @@ public class StudentPolicaService extends StudentService {
                 .setParameter("prostorija", prostorija)
                 .list();
     }
+    
+    public int getUkupnaSirinaPolice(){
+        return session.createQuery("select sum(sirina) from student_polica", Long.class).getSingleResult().intValue();
+    }
 }
