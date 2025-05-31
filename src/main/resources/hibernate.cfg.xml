@@ -7,7 +7,7 @@
     <session-factory>
         <property name="connection.driver_class">org.mariadb.jdbc.Driver</property>
         <!-- Prvo kreirati bazu 
-        create database bazapodataka; -->
+        create database skroflin_p2kol2; -->
         <property name="connection.url">jdbc:mariadb://localhost/skroflin_p2kol2</property>
         <property name="dialect">org.hibernate.dialect.MariaDBDialect</property>
         <property name="connection.username">p2</property>

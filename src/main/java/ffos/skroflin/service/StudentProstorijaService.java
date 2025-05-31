@@ -7,11 +7,13 @@ package ffos.skroflin.service;
 import ffos.skroflin.model.StudentProstorija;
 import ffos.skroflin.model.dto.StudentProstorijaDTO;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Korisnik
  */
+@Service
 public class StudentProstorijaService extends StudentService{
     public List<StudentProstorija> getAll(){
         return session.createQuery("from student_prostorija", StudentProstorija.class).list();
