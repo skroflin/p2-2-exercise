@@ -31,7 +31,7 @@ public class StudentProstorijaService extends StudentService{
     }
     
     public List<StudentPolica> getPoliceUProstoriji(StudentProstorija prostorija){
-        return session.createQuery("from student_polica where studentProstorija = :prostorija", StudentPolica.class)
+        return session.createQuery("from student_polica p join p.studentProstorija s where s = :prostorija", StudentPolica.class)
                 .setParameter("prostorija", prostorija)
                 .list();
     }
