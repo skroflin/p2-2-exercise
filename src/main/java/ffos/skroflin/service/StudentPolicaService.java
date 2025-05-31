@@ -48,14 +48,16 @@ public class StudentPolicaService extends StudentService {
         session.getTransaction().commit();
     }
 
-    public List<StudentKutija> getKutijeNaPolici(StudentProstorija prostorija) {
-        return session.createQuery("from student_kutija where studentProstorija = :prostorija", StudentKutija.class)
-                .setParameter("prostorija", prostorija)
+    public List<StudentKutija> getKutijeNaPolici(StudentPolica polica) {
+        return session.createQuery("from student_kutija where studentPolica = :polica", StudentKutija.class)
+                .setParameter("polica", polica)
                 .list();
     }
 
     public int getUkupnaSirinaPolice() {
-        return session.createQuery("select sum(sirina) from student_polica", Long.class).getSingleResult().intValue();
+        Long ukupno = session.createQuery("select sum(sirina) from student_polica", Long.class)
+                .getSingleResult();
+        return ukupno != null ? ukupno.intValue(): 0;
     }
 
     public List<StudentPolica> getPoliceUProstoriji(StudentProstorija prostorija) {

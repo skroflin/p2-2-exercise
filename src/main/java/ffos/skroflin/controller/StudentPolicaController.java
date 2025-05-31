@@ -4,12 +4,14 @@
  */
 package ffos.skroflin.controller;
 
+import ffos.skroflin.model.StudentKutija;
 import ffos.skroflin.model.StudentPolica;
 import ffos.skroflin.model.StudentProstorija;
 import ffos.skroflin.model.dto.StudentPolicaDTO;
 import ffos.skroflin.service.StudentKutijaService;
 import ffos.skroflin.service.StudentPolicaService;
 import ffos.skroflin.service.StudentProstorijaService;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -121,6 +123,46 @@ public class StudentPolicaController {
             
             policaService.removePolicaIzProstorije(polica);
             return new ResponseEntity<>("Polica uklonjena iz prostorije!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @GetMapping("/getKutijeNaPolici")
+    public ResponseEntity getKutijeNaPolici(
+            @RequestParam int sifra
+    ){
+        try {
+            if(sifra <= 0){
+                return new ResponseEntity<>("Šifra mora biti veća od 0" + " " + sifra, HttpStatus.BAD_REQUEST);
+            }
+            
+            StudentPolica polica = policaService.getBySifra(sifra);
+            if (polica == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            
+            List<StudentKutija> kutije = policaService.getKutijeNaPolici(polica);
+            if (kutije.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            
+            return new ResponseEntity<>(kutije, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @GetMapping("/getUkupnaSirinaPolice")
+    public ResponseEntity getUkupnaSirinaPolice(){
+        try {
+            int ukupnaSirina = policaService.getUkupnaSirinaPolice();
+            
+            if (ukupnaSirina == 0) {
+                return new ResponseEntity<>("Nema police u bazi sa navedenim širinama!", HttpStatus.NO_CONTENT);
+            }
+            
+            return new ResponseEntity<>(ukupnaSirina, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -46,7 +46,7 @@ public class StudentKutijaService extends StudentService{
         kutija.setStudentPolica(null);
         session.beginTransaction();
         session.merge(kutija);
-        session.beginTransaction().commit();
+        session.getTransaction().commit();
     }
     
     public void dodajKutije(BigDecimal obujam, int brojKutija){
@@ -59,8 +59,8 @@ public class StudentKutijaService extends StudentService{
     }
     
     public StudentPolica getPolicaByOznakaKutije(String oznaka){
-        StudentKutija kutija = session.createQuery("from student_kutija where oznakaKutije = :oznaka", StudentKutija.class)
-                .setParameter("oznaka", oznaka)
+        StudentKutija kutija = session.createQuery("select * from student_kutija where oznakaKutij like :oznaka", StudentKutija.class)
+                .setParameter("oznaka", "%" + oznaka + "%")
                 .getSingleResult();
         return kutija.getStudentPolica();
     }
