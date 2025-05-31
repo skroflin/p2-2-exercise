@@ -4,7 +4,6 @@
  */
 package ffos.skroflin.service;
 
-import ffos.skroflin.model.StudentPolica;
 import ffos.skroflin.model.StudentProstorija;
 import ffos.skroflin.model.dto.StudentProstorijaDTO;
 import java.util.List;
@@ -30,11 +29,6 @@ public class StudentProstorijaService extends StudentService{
         return studentProstorija;
     }
     
-    public List<StudentPolica> getPoliceUProstoriji(StudentProstorija prostorija){
-        return session.createQuery("from student_polica p join p.studentProstorija s where s = :prostorija", StudentPolica.class)
-                .setParameter("prostorija", prostorija)
-                .list();
-    }
     
     public List<StudentProstorija> getProstorPoKabinetu(boolean jeKabinet){
         return session.createQuery("from student_prostorija where kabinet = :kabinet", StudentProstorija.class)
