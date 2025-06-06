@@ -63,7 +63,7 @@ public class StudentProstorijaController {
         }
     }
 
-        @Operation(
+    @Operation(
             summary = "Dohvaća prostoriju po šifri",
             description = "Dohvaća prostoriju po danoj šifri sa svim podacima. "
             + "Ukoliko ne postoji prostorija za danu šifru vraća prazan odgovor",
@@ -82,7 +82,7 @@ public class StudentProstorijaController {
         @ApiResponse(responseCode = "400", description = "Šifra mora biti veća od nula", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
         @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
-    
+
     @GetMapping("/getBySifra")
     public ResponseEntity getBySifra(
             @RequestParam int sifra
@@ -102,6 +102,26 @@ public class StudentProstorijaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(
+            summary = "Dohvaća police u prostoriji",
+            description = "Dohvaća police u prostoriji po danoj šifri sa svim podacima o policama u navedenoj prostoriji. "
+            + "Ukoliko ne postoji polica za danu šifru vraća prazan odgovor",
+            tags = {"polica", "prostorija", "getBy"},
+            parameters = {
+                @Parameter(
+                        name = "sifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ police u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                )})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = StudentProstorija.class), mediaType = "application/json")),
+        @ApiResponse(responseCode = "204", description = "Ne postoji kolegij za danu šifru"),
+        @ApiResponse(responseCode = "400", description = "Šifra mora biti veća od nula", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
 
     @GetMapping("/getPoliceUProstoriji")
     public ResponseEntity getPoliceUProstoriji(
@@ -128,6 +148,26 @@ public class StudentProstorijaController {
         }
     }
 
+    @Operation(
+            summary = "Dohvaća prostor po kabinetu",
+            description = "Dohvaća prostor po danom kabinetu sa svim podacima o prostoriji. "
+            + "Ukoliko ne postoji prostor za dan kabinet, vraća prazan odgovor",
+            tags = {"prostor", "getBy"},
+            parameters = {
+                @Parameter(
+                        name = "sifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ police u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                )})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = StudentProstorija.class), mediaType = "application/json")),
+        @ApiResponse(responseCode = "204", description = "Ne postoji kolegij za danu šifru"),
+        @ApiResponse(responseCode = "400", description = "Šifra mora biti veća od nula", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
+
     @GetMapping("/getProstorPoKabinetu")
     public ResponseEntity getProstorPoKabinetu(
             @RequestParam boolean kabinet
@@ -144,6 +184,16 @@ public class StudentProstorijaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(
+            summary = "Kreira novu prostoriju",
+            tags = {"post", "prostorija"},
+            description = "Kreira novu prostoriju. Kabinet obavezan")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Kreirano", content = @Content(schema = @Schema(implementation = StudentProstorija.class), mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "Loš zahtjev (nije primljen dto objekt ili ne postoji ime ili prezime ili jmbag)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
 
     @PostMapping("/post")
     public ResponseEntity post(
