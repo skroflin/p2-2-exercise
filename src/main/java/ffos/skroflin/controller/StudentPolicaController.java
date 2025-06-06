@@ -223,6 +223,24 @@ public class StudentPolicaController {
         }
     }
 
+    @Operation(
+            summary = "Dohvaća kutije na polici.",
+            description = "Dohvaća kutije po uvjetu police sa svim podacima. ",
+            tags = {"kutija", "getBy", "polica"},
+            parameters = {
+                @Parameter(
+                        name = "sifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Šifra kutije",
+                        example = "1"
+                )})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StudentPolica.class)))),
+        @ApiResponse(responseCode = "400", description = "Uvjet mora biti postavljen", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
+
     @GetMapping("/getKutijeNaPolici")
     public ResponseEntity getKutijeNaPolici(
             @RequestParam int sifra
@@ -247,6 +265,16 @@ public class StudentPolicaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(
+            summary = "Dohvaća ukupnu širinu police.", tags = {"getUkupnaSirinaPolice", "polica"},
+            description = "Dohvaća ukunpu širinu police sa svim podacima"
+    )
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StudentPolica.class)))),
+                @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+            })
 
     @GetMapping("/getUkupnaSirinaPolice")
     public ResponseEntity getUkupnaSirinaPolice() {
