@@ -139,6 +139,28 @@ public class StudentPolicaController {
         }
     }
 
+    @Operation(
+            summary = "Postavlja policu u prostoriji",
+            tags = {"prostorija", "polica", "patch"},
+            description = "Postavlja profesora kolegija. Šifra profesora i kolegija obavezne",
+            parameters = {
+                @Parameter(
+                        name = "prostorSifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ prostorije u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                ),
+                @Parameter(
+                        name = "policaSifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ police u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                )
+            }
+    )
+
     @PatchMapping("/setStudentProstorija")
     public ResponseEntity setStudentProstorija(
             @RequestParam int sifraPolice,
@@ -162,6 +184,26 @@ public class StudentPolicaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(
+            summary = "Miče policu iz prostorije",
+            tags = {"prostorija", "polica", "patch"},
+            description = "Miče policu iz prostorije. Šifra police obavezna",
+            parameters = {
+                @Parameter(
+                        name = "policaSifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ police u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                )
+            }
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Profesor postavljen na kolegij", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Loš zahtjev (nisu primljene šifre dobre ili ne postoji kolegij/profesor po tim šiframa)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
 
     @PatchMapping("/removePolicaIzProstorije")
     public ResponseEntity<String> removePolicaIzProstorije(
