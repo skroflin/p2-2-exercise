@@ -30,7 +30,7 @@ public class StudentKutijaService extends StudentService{
     public StudentKutija post(StudentKutijaDTO o){
         StudentKutija studentKutija = new StudentKutija(o.datumPohrane(), o.obujam(), o.oznakaKutije());
         session.beginTransaction();
-        session.persist(o);
+        session.persist(studentKutija);
         session.getTransaction().commit();
         return studentKutija;
     }

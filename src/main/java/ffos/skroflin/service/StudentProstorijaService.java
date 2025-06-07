@@ -26,7 +26,7 @@ public class StudentProstorijaService extends StudentService{
     public StudentProstorija post(StudentProstorijaDTO o){
         StudentProstorija studentProstorija = new StudentProstorija(o.kabinet(), o.naziv());
         session.beginTransaction();
-        session.persist(o);
+        session.persist(studentProstorija);
         session.getTransaction().commit();
         return studentProstorija;
     }

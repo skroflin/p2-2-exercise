@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.math.BigDecimal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -105,6 +106,28 @@ public class StudentKutijaController {
         }
     }
 
+    @Operation(
+            summary = "Postavlja kutiju na policu",
+            tags = {"kutija", "polica", "patch"},
+            description = "Postavlja kutiju polici. Šifra kutije i police obavezne",
+            parameters = {
+                @Parameter(
+                        name = "policaSifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ police u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                ),
+                @Parameter(
+                        name = "kutijaSifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ kutije u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                )
+            }
+    )
+    
     @PatchMapping("/setPolica")
     public ResponseEntity<String> setPolica(
             @RequestParam int policaSifra,
@@ -132,6 +155,24 @@ public class StudentKutijaController {
         }
     }
 
+    @Operation(
+            summary = "Dohvaća police po oznaci kutije",
+            description = "Dohvaća police po uvjetu vrijednosti oznake s kutije sa svim podacima. ",
+            tags = {"student", "getBy",},
+            parameters = {
+                @Parameter(
+                        name = "oznaka",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Oznaka kutije",
+                        example = "ern"
+                )})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StudentKutija.class)))),
+        @ApiResponse(responseCode = "400", description = "Uvjet, stranica i po stranici moraju biti mora biti postavljen", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
+    
     @GetMapping("/getPolicaByOznakaKutije")
     public ResponseEntity getPolicaByOznakaKutije(
             @RequestParam String oznaka
@@ -148,6 +189,31 @@ public class StudentKutijaController {
         }
     }
 
+    @Operation(
+            summary = "Kreira nove kutije sa svojim obujmom.",
+            tags = {"post", "student"},
+            description = "Kreira onoliko kutija koliko primi kroz parametar sa obujmom ", parameters = {
+                @Parameter(
+                        name = "broj",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Broj kutija koji će biti kreirani.",
+                        example = "10"
+                ),
+                @Parameter(
+                        name = "obujam",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Obujam s kojim će kutije biti napravljene.",
+                        example = "10"
+                )  
+            })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kreirano", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Loš zahtjev (nije primljen broj koliko studenata treba dodati)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
+    
     @PostMapping("/dodajKutije")
     public ResponseEntity dodajKutije(
             @RequestParam BigDecimal obujam,
@@ -163,8 +229,28 @@ public class StudentKutijaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @PatchMapping("/removeKutijaSaPolice")
+    
+    @Operation(
+            summary = "Ukloni kutiju s police",
+            tags = {"kutija", "polica", "delete"},
+            description = "Uklanja kutiju s police. Šifra kutije obavezne. Ukoliko kutija ne postoji na polici, neće biti obrisana",
+            parameters = {
+                @Parameter(
+                        name = "kutijaSifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ kutije u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                )
+            }
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Profesor postavljen na kolegij", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Loš zahtjev (nisu primljene šifre dobre ili ne postoji student/profesor po tim šiframa)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
+    
+    @DeleteMapping("/removeKutijaSaPolice")
     public ResponseEntity<String> removeKutijaSaPolice(
             @RequestParam int sifraKutije
     ) {

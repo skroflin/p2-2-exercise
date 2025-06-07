@@ -29,7 +29,7 @@ public class StudentPolicaService extends StudentService {
     public StudentPolica post(StudentPolicaDTO o) {
         StudentPolica studentPolica = new StudentPolica(o.duzina(), o.sirina(), o.visina());
         session.beginTransaction();
-        session.persist(o);
+        session.persist(studentPolica);
         session.getTransaction().commit();
         return studentPolica;
     }
