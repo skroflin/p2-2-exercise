@@ -60,4 +60,7 @@ public class StudentKutija extends Entitet{
         this.obujam = obujam;
         this.oznakaKutije = oznakaKutije;
     }
+
+    public StudentKutija() {
+    }
 }
