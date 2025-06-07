@@ -9,6 +9,14 @@ import ffos.skroflin.model.StudentPolica;
 import ffos.skroflin.service.StudentKutijaService;
 import ffos.skroflin.service.StudentPolicaService;
 import ffos.skroflin.service.StudentProstorijaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.math.BigDecimal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author svenk
  */
+@Tag(name = "Student -> Kutija", description = "Dostupne rute za entitet StudentKutija")
 @RestController
 @RequestMapping("/api/skroflin/studentKutija")
 public class StudentKutijaController {
@@ -37,6 +46,16 @@ public class StudentKutijaController {
         this.prostorijaService = prostorijaService;
     }
 
+    @Operation(
+            summary = "Dohvaća sve kutija", tags = {"get", "kutija"},
+            description = "Dohvaća sve kutije sa svim podacima"
+    )
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StudentKutija.class)))),
+                @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+            })
+
     @GetMapping("/get")
     public ResponseEntity get() {
         try {
@@ -45,6 +64,26 @@ public class StudentKutijaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(
+            summary = "Dohvaća kutiju po šifri",
+            description = "Dohvaća kutiju po danoj šifri sa svim podacima. "
+            + "Ukoliko ne postoji kutija za danu šifru vraća prazan odgovor",
+            tags = {"kutija", "getBy"},
+            parameters = {
+                @Parameter(
+                        name = "sifra",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primarni ključ kutije u bazi podataka, mora biti veći od nula",
+                        example = "2"
+                )})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = StudentKutija.class), mediaType = "application/json")),
+        @ApiResponse(responseCode = "204", description = "Ne postoji student za danu šifru", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Šifra mora biti veća od nula", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Interna pogreška servera", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
 
     @GetMapping("/getBySifra")
     public ResponseEntity getBySifra(
@@ -102,18 +141,18 @@ public class StudentKutijaController {
             if (polica == null) {
                 return new ResponseEntity<>("Kutija s navedenom oznakom nije pronađena", HttpStatus.BAD_REQUEST);
             }
-            
+
             return new ResponseEntity<>(polica, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping("/dodajKutije")
     public ResponseEntity dodajKutije(
             @RequestParam BigDecimal obujam,
             @RequestParam int brojKutija
-    ){
+    ) {
         try {
             if (brojKutija <= 0) {
                 return new ResponseEntity<>("Broj kutija mora biti veći od 0" + " " + brojKutija, HttpStatus.BAD_REQUEST);
@@ -124,17 +163,17 @@ public class StudentKutijaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PatchMapping("/removeKutijaSaPolice")
     public ResponseEntity<String> removeKutijaSaPolice(
             @RequestParam int sifraKutije
-    ){
+    ) {
         try {
             StudentKutija kutija = kutijaService.getBySifra(sifraKutije);
             if (kutija == null) {
                 return new ResponseEntity<>("Ne postoji kutija s navedenom šifrom" + " " + sifraKutije, HttpStatus.BAD_REQUEST);
             }
-            
+
             kutijaService.removeKutijasaPolice(kutija);
             return new ResponseEntity<>("Kutija uspješno skinuta s police", HttpStatus.OK);
         } catch (Exception e) {
