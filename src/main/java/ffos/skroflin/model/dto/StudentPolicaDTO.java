@@ -11,9 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author Korisnik
  */
 public record StudentPolicaDTO(
-        @Schema(example = "50m") int duzina,
-        @Schema(example = "100m") int sirina,
-        @Schema(example = "3m") int visina
+        @Schema(example = "50") int duzina,
+        @Schema(example = "100") int sirina,
+        @Schema(example = "3") int visina
         ) {
     
 }
